@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
             $table->foreignId('item_id')->constrained();
-            $table->integer('quantity_requested');
-            $table->integer('price_at_purchase_cents'); // Historical price locking snapshots
+            $table->unsignedInteger('quantity_requested');
+            $table->unsignedInteger('price_at_purchase_cents'); // Historical price locking snapshots
             $table->timestamps();
+            $table->unique(['order_id', 'item_id']); // One line per item per order
         });
     }
 

@@ -16,9 +16,8 @@ return new class extends Migration
             $table->foreignId('inventory_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained(); // Captures the exact warehouse operator acting
             $table->integer('quantity_change'); // Positive integers for receiving, negative for picking
-            $table->string('type'); // 'receive', 'pick', 'adjustment', 'transfer'
-            $table->string('reference_type')->nullable(); // Polymorphic document logging tracking (e.g. App\Models\Order)
-            $table->unsignedBigInteger('reference_id')->nullable();
+            $table->string('type')->index(); // App\Enums\StockMovementType
+            $table->nullableMorphs('reference'); // Source document, e.g. an Order (reference_type + reference_id)
             $table->text('reason')->nullable();
             $table->timestamps();
         });

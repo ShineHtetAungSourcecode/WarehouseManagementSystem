@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -16,6 +17,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 
 /**
  * @property int $id
+ * @property int|null $company_id
+ * @property int|null $role_id
  * @property string $name
  * @property string $email
  * @property Carbon|null $email_verified_at
@@ -27,7 +30,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['company_id', 'role_id', 'name', 'email', 'password'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
 {
@@ -39,12 +42,6 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
      *
      * @return array<string, string>
      */
-
-    protected $fillable = ['company_id', 'role_id', 'name', 'email', 'password'];
-    public function company() { return $this->belongsTo(Company::class); }
-    public function role() { return $this->belongsTo(Role::class); }
-    public function hasRole($slug) { return $this->role && $this->role->slug === $slug; }
-
     protected function casts(): array
     {
         return [
@@ -52,5 +49,20 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
         ];
+    }
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function hasRole(string $slug): bool
+    {
+        return $this->role?->slug === $slug;
     }
 }

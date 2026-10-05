@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('warehouse_id')->constrained()->onDelete('cascade');
             $table->foreignId('item_id')->constrained()->onDelete('cascade');
-            $table->integer('quantity')->default(0);
+            $table->unsignedInteger('quantity')->default(0); // Never negative; enforced in InventoryService
             $table->string('bin_location')->nullable(); // e.g., Aisle 4, Shelf B
             $table->timestamps();
             $table->unique(['warehouse_id', 'item_id']); // Unique tracking composite row per warehouse

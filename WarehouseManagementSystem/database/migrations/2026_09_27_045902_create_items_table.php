@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained()->onDelete('cascade'); // Tenant isolated catalog items
-            $table->string('sku')->unique(); // Stock Keeping Unit
+            $table->string('sku'); // Stock Keeping Unit
             $table->string('name');
             $table->text('description')->nullable();
-            $table->integer('price_cents')->default(0); // B2B contract pricing
+            $table->unsignedInteger('price_cents')->default(0); // B2B contract pricing
+            $table->unsignedInteger('reorder_level')->default(0); // Low-stock alert threshold
             $table->timestamps();
+            $table->unique(['company_id', 'sku']); // Two companies may use the same SKU
         });
     }
 

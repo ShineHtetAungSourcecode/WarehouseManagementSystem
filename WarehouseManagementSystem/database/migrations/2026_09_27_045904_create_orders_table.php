@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('company_id')->constrained()->onDelete('cascade');
             $table->foreignId('warehouse_id')->constrained(); // Origin warehouse processing fulfillment
-            $table->string('order_number')->unique();
-            $table->string('status')->default('pending'); // pending, processing, shipped, cancelled
+            $table->string('order_number');
+            $table->string('status')->default('pending')->index(); // App\Enums\OrderStatus
             $table->timestamps();
+            $table->unique(['company_id', 'order_number']);
         });
 
     }

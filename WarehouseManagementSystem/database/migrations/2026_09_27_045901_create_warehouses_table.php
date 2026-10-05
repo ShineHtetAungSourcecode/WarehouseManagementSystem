@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('company_id')->constrained()->onDelete('cascade'); // Scopes warehouse access
             $table->string('name');
-            $table->string('code')->unique(); // e.g., WH-HOUSTON-01
+            $table->string('code'); // e.g., WH-HOUSTON-01
             $table->string('location')->nullable();
             $table->timestamps();
+            $table->unique(['company_id', 'code']); // Codes only need to be unique within a company
         });
     }
 
